@@ -117,6 +117,7 @@ public class Postfix {
     { 
         int c=0;
         Scanner sc = new Scanner(System.in);
+         System.out.println("Sunidhi\tA2305218584");
         System.out.println("Enter infix Expression");
         String exp = sc.nextLine();
         System.out.println("Converting....");
@@ -127,7 +128,6 @@ public class Postfix {
             
             }
         }
-        
         if(c==0)
             System.out.println(Postfix(exp));
         else

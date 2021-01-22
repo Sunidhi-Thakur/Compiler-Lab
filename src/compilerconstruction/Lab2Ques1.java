@@ -41,6 +41,7 @@ class Lab2Ques1{
     
 
     public static void main(String args[]) {
+        System.out.println("Sunidhi\tA2305218584");
         Scanner sc = new Scanner(System.in);
         System.out.println("ENTER A STRING. USE 'e' TO REPRESENT NULL");
         String s = sc.next();
