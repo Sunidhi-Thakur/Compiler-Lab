@@ -4,13 +4,138 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 class FirstAndFollow {
 
-    ArrayList<String> removeLeftRecursion(String p) {
+    public static void main(String args[]) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Enter the number of non-terminals");
+        int N = Integer.parseInt(br.readLine());
+        System.out.println("Enter the productions");
+        String[] p = new String[N];
+
+        ArrayList<String> prod = new ArrayList<>();
+        String a;
+        int k;
+        for (int i = 0; i < N; i++) {
+            p[i] = br.readLine();
+
+        }
+
+        for (int i = 0; i < N; i++) {
+            prod.addAll(removeLeftRecursion(p[i]));
+        }
+
+        System.out.println("\nAfter removing left recursion");
+
+        Iterator<String> it = prod.iterator();
+        while (it.hasNext()) {
+            System.out.println(it.next());
+        }
+
+        String[] p1 = new String[prod.size()];
+        p1 = prod.toArray(p1);
+        String nt[] = new String[p1.length];
+        for (int i = 0; i < p1.length; i++) {
+            nt[i] = p1[i].substring(0, p1[i].indexOf("-"));
+        }
+
+        HashMap<String, String> first = new HashMap<>();
+        HashMap<String, String> follow = new HashMap<>();
+        first = firstOfGrammar(p1, first);
+
+        for (int l = 0; l < 3; l++) {
+            k = 0;
+            a = "";
+            while (k < nt.length) {
+                String value = first.get(nt[k] + "");
+
+                for (int i = 0; i < value.length(); i++) {
+
+                    if (Character.isUpperCase(value.charAt(i))) {
+                        a += first.get(value.charAt(i) + "");
+                    } else {
+                        a += value.charAt(i);
+                    }
+                }
+
+                first.put(nt[k] + "", a);
+                a = "";
+                k++;
+            }
+        }
+
+        follow = followOfGrammar(nt, p1, follow, first);
+        String ans = follow.get(p[0].substring(0, 1));
+        ans += " $ ";
+        follow.put(p[0].substring(0, 1), ans);
+        for (int l = 0; l < 3; l++) {
+            k = 0;
+            a = "";
+            while (k < nt.length) {
+                String value = follow.get(nt[k] + "");
+                for (int i = 0; i < value.length(); i++) {
+                    if (Character.isUpperCase(value.charAt(i))) {
+                        a += follow.get(value.charAt(i) + "");
+                    } else {
+                        a += value.charAt(i);
+                    }
+                }
+
+                follow.put(nt[k] + "", a);
+                a = "";
+                k++;
+            }
+        }
+
+        System.out.println("\nFirst of elements:");
+        for (Map.Entry<String, String> entry : first.entrySet()) {
+            System.out.println("First(" + entry.getKey() + ")={" + entry.getValue().trim() + "}");
+        }
+        System.out.println("\nFollow of elements:");
+        for (Map.Entry<String, String> entry : follow.entrySet()) {
+            String d=entry.getValue();
+            if(entry.getValue().contains("'")){
+                d = entry.getValue().replaceAll("'", "");
+            }
+            System.out.println("Follow(" + entry.getKey() + ")={" + d.trim() + "}");
+        }
+    }
+
+    private static HashMap<String, String> firstOfGrammar(String[] p, HashMap<String, String> first) {
+        String s, ans;
+        for (String p1 : p) {
+
+            StringTokenizer str = new StringTokenizer(p1, "|");
+            ans = "";
+            while (str.hasMoreElements()) {
+                s = str.nextToken();
+                if (s.contains("->")) {
+                    s = s.substring(3);
+                }
+
+                if (s.equals("∈")) {
+                    ans += "∈ ";
+                } else {
+                    ans += s.charAt(s.indexOf(">") + 1) + " ";
+                }
+
+                if (p1.charAt(1) == '\'') {
+                    first.put(p1.substring(0, 2), ans);
+                } else {
+                    first.put(p1.charAt(0) + "", ans);
+                }
+            }
+        }
+
+        return first;
+    }
+
+    private static ArrayList<String> removeLeftRecursion(String p) {
         ArrayList<String> noLeftRecur = new ArrayList<>();
         String first = " ";
         String dash = " ";
@@ -51,157 +176,55 @@ class FirstAndFollow {
         return noLeftRecur;
     }
 
-    ArrayList<String> firstOfNonTerminals(ArrayList<String> prod, ArrayList<String> first, char Symbol) {
-        Iterator<String> it = prod.iterator();
-        String f = "", a1 = "", a2 = "";
-        int k;
-        while (it.hasNext()) {
-            String a = it.next();
-            if (!(a.contains("|"))) {
-                if (a.charAt(a.indexOf('>') + 1) == 'ϵ' || a.charAt(a.indexOf('|') + 1) == 'ϵ') {
-                    f = "ϵ ";
-                }
-                if (!(Character.isUpperCase(a.charAt(a.indexOf('>') + 1)))) {
-                    k = a.indexOf('>') + 1;
-                    while (k < a.length() && !(Character.isUpperCase(a.charAt(k)))) {
-                        f += a.charAt(k);
-                        k++;
-                    }
-                } else {
-                    f = "S";
-                    if (a.contains("'")) {
-                        f += a.substring(a.indexOf('>') + 1);
-                    } else {
-                        f += a.charAt(a.indexOf('>') + 1);
-                    }
-                }
-                first.add(f.trim());
-                f = "";
-            } else {
-                a2 = a.substring(a.indexOf(">") + 1);
-                StringTokenizer str = new StringTokenizer(a2, "|");
-                while (str.hasMoreTokens()) {
-                    a1 = str.nextToken();
-                    k = 0;
-
-                    if (k < a1.length() && !(Character.isUpperCase(a1.charAt(k)))) {
-                        while (k < a1.length() && !(Character.isUpperCase(a1.charAt(k)))) {
-                            f += a1.charAt(k) + " ";
-                            k++;
-                        }
-                    } else {
-                        f = "S";
-                        if (a1.contains("'")) {
-                            f += a1.substring(0);
-                        } else {
-                            f += a1.charAt(a1.charAt(0));
-                        }
-                    }
-                }
-                first.add(f.trim());
-                f = "";
-            }
-
-        }
-        return first;
-    }
-
-//    ArrayList<String> followOfNonTerminals(String sub, ArrayList<String> follow, char symbol, LinkedHashSet<String> nonTerminals) {
-//        
-//        
-//        return follow;
-//    }
-}
-
-class FirstAndFollowDriver {
-
-    public static void main(String args[]) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Enter the number of Non-Terminals:");
-        int N = Integer.parseInt(br.readLine());
-        System.out.println("Enter Productions:");
-        String[] p = new String[N];
-        String f = " ";
-        LinkedHashSet<String> terminals = new LinkedHashSet<>();
-        LinkedHashSet<String> nonTerminals = new LinkedHashSet<>();
-
-        ArrayList<String> prod = new ArrayList<>();
-
-        ArrayList<String> first = new ArrayList<>();
-        ArrayList<String> follow = new ArrayList<>();
-
-        for (int i = 0; i < N; i++) {
-            p[i] = br.readLine();
-
-        }
-        char symbol = p[0].charAt(0);
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < p[i].length(); j++) {
-                if (!(p[i].charAt(j) >= 65 && p[i].charAt(j) <= 90) && p[i].charAt(j) != '|' && p[i].charAt(j) != '-' && p[i].charAt(j) != '>') {
-                    f += p[i].charAt(j);
-
-                } else {
-                    terminals.add(f.trim());
-                    f = " ";
-                }
-            }
-
-            terminals.add(f.trim());
-        }
-
-        System.out.println();
-        FirstAndFollow l = new FirstAndFollow();
-        for (int i = 0; i < N; i++) {
-            prod.addAll(l.removeLeftRecursion(p[i]));
-        }
-        System.out.println("After removing left recursion");
-
-        Iterator<String> it = prod.iterator();
-        while (it.hasNext()) {
-            String a = it.next();
-            System.out.println(a);
-            nonTerminals.add(a.substring(0, a.indexOf('-')));
-
-        }
-        first = l.firstOfNonTerminals(prod, first, symbol);
-        Iterator<String> it2 = prod.iterator();
-        String a, sub = " ";
-        while (it.hasNext()) {
-            a = it.next();
-            sub += a.substring(a.indexOf(">") + 1);
-        }
-        //follow = l.followOfNonTerminals(sub, follow, symbol, nonTerminals);
-
-        String t[] = terminals.toArray(new String[terminals.size()]);
-        String nt[] = nonTerminals.toArray(new String[nonTerminals.size()]);
-
-        System.out.println(first);
-        String key = "", check = "";
+    private static HashMap<String, String> followOfGrammar(String[] nt, String[] p1, HashMap<String, String> follow, HashMap<String, String> first) {
+        String s, ans;
         int k = 0;
-        for (int i = 0; i < nonTerminals.size(); i++) {
-            check = first.get(i);
-            if (check.startsWith("S")) {
-                if (check.charAt(2) == '\'') {
-                    key = check.substring(1, 3);
-                    System.out.println("key="+ key);
-                } else {
-                    key = check.substring(1, 2);
-                    System.out.println("key="+key);
-                }
-                while (k < nt.length) {
-                    if (nt[k].equals(key)) {
-                        System.out.println("First(" + nt[i] + ")={" + first.get(k) + "}");
-                        break;
-                    } else {
-                        k++;
+        while (k < nt.length) {
+            for (String p : p1) {
+                StringTokenizer str = new StringTokenizer(p, "|");
+                ans = "";
+                while (str.hasMoreElements()) {
+                    s = str.nextToken();
+                    if (s.contains("->")) {
+                        s = s.substring(s.indexOf(">") + 1);
+                    }
+
+                    if (s.contains(nt[k])) {
+                        if (nt[k].contains("'") && s.contains("'") && s.length() > 1) {
+                            if (s.charAt(s.length() - 1) == '\'') {
+                                ans += p.substring(0, p.indexOf("-"));
+                            } else {
+                                ans += s.substring(s.indexOf(nt[k]) + 1);
+                            }
+
+                        } else if (!(nt[k].contains("'")) && s.contains("'")) {
+                            if (s.charAt(s.indexOf(nt[k]) + 1) != '\'') {
+                                ans += first.get(s.substring(s.indexOf(nt[k]) + 1));
+                                if (ans.contains("ϵ")) {
+                                    ans = ans.replace("ϵ", "");
+                                    if (s.length() - 1 > s.indexOf("'") && Character.isUpperCase(s.charAt(s.indexOf("'") + 1))) {
+                                        ans += first.get(s.substring(s.indexOf("'") + 1));
+
+                                    } else if (s.length() - 1 > s.indexOf("'") && Character.isLowerCase(s.charAt(s.indexOf("'") + 1))) {
+                                        ans += s.substring(s.indexOf("'") + 1);
+                                    } else {
+                                        ans += p.substring(0, p.indexOf("-"));
+                                    }
+                                }
+                            }
+
+                        } else {
+                            ans += s.charAt(s.indexOf(nt[k]) + 1);
+
+                        }
                     }
                 }
-            } else {
-                System.out.println("First(" + nt[i] + ")={" + first.get(i) + "}");
+                if (ans.length() >= 1 && !(ans.equals(nt[k]))) {
+                    follow.put(nt[k], ans);
+                }
             }
+            k++;
         }
-
-        System.out.println();
+        return follow;
     }
-
 }

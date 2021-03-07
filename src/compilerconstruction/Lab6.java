@@ -126,19 +126,30 @@ class Lab6 {
     ArrayList<String> followOfNonTerminals(ArrayList<String> first, ArrayList<String> follow, ArrayList<String> prod, String[] nt) {
         Iterator<String> it = prod.iterator();
         String a[] = new String[10];
-        int k = 0;
-        String t = "";
+        int k = 0, j=0;
+        String t = "", e="";
         while (it.hasNext()) {
             t= it.next();
             a[k++] = t.substring(t.indexOf('>')+1);
         }
+        k=0;
         for(int i=0; i<nt.length;i++){
+            k=0;
             while(!(a[k].contains(nt[i]))){
                 k++;
+                System.out.println(a[k]);
             }
+            
             if(Character.isUpperCase(a[k].indexOf(nt[i]+1))){
                 if(a[k].length() >=2 && a[k].indexOf(nt[i]+2) == '\'')
-                    follow.add(first.get(k));
+                    e = a[k].substring(a[k].indexOf(nt[i]+1), a[k].indexOf(nt[i]+3));
+                else
+                    e = a[k].substring(a[k].indexOf(nt[i]+1), a[k].indexOf(nt[i]+2));
+                while(!(nt[j].equals(e)))
+                    j++;
+                follow.add(first.get(j));
+                j=0;
+                System.out.println(e);
             }
         }
         return follow;
