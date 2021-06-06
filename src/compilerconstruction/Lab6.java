@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.StringTokenizer;
-
 class Lab6 {
-
     ArrayList<String> removeLeftRecursion(String p) {
         ArrayList<String> noLeftRecur = new ArrayList<>();
         String first = " ";
@@ -188,10 +186,8 @@ class Lab6Driver {
                     f = " ";
                 }
             }
-
             terminals.add(f.trim());
         }
-
         System.out.println();
         Lab6 l = new Lab6();
         for (int i = 0; i < N; i++) {

@@ -12,22 +12,18 @@ public class Lexer {
     private int position;
     private char chr;
     private final String s;
- 
     Map<String, TokenType> keywords = new HashMap<>();
- 
     static class Token {
         public TokenType tokentype;
         public String value;
         public int line;
         public int pos;
-        
         Token(TokenType token, String value, int line, int pos) {
             this.tokentype = token; 
             this.value = value; 
             this.line = line; 
             this.pos = pos;
         }
-        
         @Override
         public String toString() {
             String result = String.format("%5d  %5d     %-15s", this.line, this.pos, this.tokentype);
@@ -45,7 +41,6 @@ public class Lexer {
             return result;
         }
     }
- 
     static enum TokenType {
         End_of_input, Op_multiply,  Op_divide, Op_mod, Op_add, Op_subtract,
         Op_negate, Op_not, Op_less, Op_lessequal, Op_greater, Op_greaterequal,
@@ -56,7 +51,6 @@ public class Lexer {
         LeftParen, RightParen,
         LeftBrace, RightBrace, Delimiter, Identifier, Integer, Literal
     }
-
     Lexer(String source, int count) {
         this.line = count;
         this.pos = 0;
@@ -82,8 +76,6 @@ public class Lexer {
         this.keywords.put("do", TokenType.Keyword_do);
         this.keywords.put("static", TokenType.Keyword_static);
         this.keywords.put("struct", TokenType.Keyword_struct);
-        
- 
     }
     Token follow(char expect, TokenType ifyes, TokenType ifno, int line, int pos) {
         if (getNextChar() == expect) {

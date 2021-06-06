@@ -532,7 +532,6 @@ class RegularExpressionDriver1 {
                         System.out.print(it.next());
                     }
                 }
-//System.out.println("Regular Set = " + rSet);
                 w.append("\n\n\nEnd of Program");
                 count++;
             }

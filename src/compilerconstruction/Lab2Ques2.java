@@ -1,12 +1,9 @@
 package compilerconstruction;
 
 import java.util.Scanner;
-
 class Lab2Ques2 {
-
     private String check(String s) {
         String qt = "q0";
-
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             if (c == 'e') {
@@ -52,12 +49,10 @@ class Lab2Ques2 {
                 } else if ((qt.equals("q2q3")) && (c == 'a' || c == 'd')) {
                     qt = "Trap";
                 }
-
             }
         }
         return qt;
     }
-
     public static void main(String args[]) {
         Scanner sc = new Scanner(System.in);
         System.out.println("ENTER A STRING. USE 'e' TO REPRESENT NULL");
@@ -70,9 +65,6 @@ class Lab2Ques2 {
                 break;
             default:
                 System.out.println("String Rejected");
-
         }
-
     }
-
 }

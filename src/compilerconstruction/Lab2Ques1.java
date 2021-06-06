@@ -1,12 +1,9 @@
 package compilerconstruction;
 
 import java.util.Scanner;
-
 class Lab2Ques1{
-
     private String check(String s) {
         String qt = "q0";
- 
             for (int i = 0; i < s.length(); i++) {
                 char c = s.charAt(i);
                 if(c == 'e'){
@@ -32,14 +29,10 @@ class Lab2Ques1{
                 else if ((qt.equals("q2")) && (c == '0' || c=='1')) {
                     qt = "Trap";
                 }
-              
-
             }
             }
             return qt;
         }
-    
-
     public static void main(String args[]) {
         System.out.println("Sunidhi\tA2305218584");
         Scanner sc = new Scanner(System.in);
@@ -53,12 +46,7 @@ class Lab2Ques1{
                 System.out.println("String Accepted");
                 break;
             default:
-                System.out.println("String Rejected");
-                
+                System.out.println("String Rejected");       
         }
-
-
     }
-
 }
-

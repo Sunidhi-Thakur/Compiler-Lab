@@ -13,6 +13,7 @@ class FirstAndFollow {
 
     public static void main(String args[]) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Sunidhi\t\tA2305218584");
         System.out.println("Enter the number of non-terminals");
         int N = Integer.parseInt(br.readLine());
         System.out.println("Enter the productions");
@@ -77,7 +78,7 @@ class FirstAndFollow {
             k = 0;
             a = "";
             while (k < nt.length) {
-                String value = follow.get(nt[k] + "");
+                String value = follow.get(nt[k]);
                 for (int i = 0; i < value.length(); i++) {
                     if (Character.isUpperCase(value.charAt(i))) {
                         a += follow.get(value.charAt(i) + "");
@@ -118,8 +119,8 @@ class FirstAndFollow {
                     s = s.substring(3);
                 }
 
-                if (s.equals("∈")) {
-                    ans += "∈ ";
+                if (s.equals("ϵ")) {
+                    ans += "ϵ ";
                 } else {
                     ans += s.charAt(s.indexOf(">") + 1) + " ";
                 }
@@ -213,9 +214,12 @@ class FirstAndFollow {
                                 }
                             }
 
-                        } else {
+                        } else if(s.length()-1>=2){
                             ans += s.charAt(s.indexOf(nt[k]) + 1);
 
+                        }
+                        else{
+                            ans += s.charAt(0);
                         }
                     }
                 }
